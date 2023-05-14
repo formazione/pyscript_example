@@ -1,0 +1,216 @@
+</head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+<!-- pyscript stuff in the header -->
+        <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+        <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+
+</head>
+<body>
+      <div class="jumbotron">
+        <div class="container">
+          <table>
+<!--      PUT AN IMAGE ON TOP OF THE PAGE IF YOU NEED IT        
+ <td><center><img src="aklogo.png"></center><br></td> -->
+              
+<!-- TITLE YOU SEE IN THE PAGE -->
+          <td><h1 class="display-3">Leggi scolastiche</h1></td>
+          </table>
+
+<!-- FINALLY SOME PYTHON CODE IN A WEB PAGE, THANKS TO PYSCRIPT -->
+        <py-script>
+            from datetime import datetime
+            import os
+            from pyscript import Element
+
+            now = datetime.now()
+            data = """
+            ----------------------
+            METTI QUI I TUOI PROMEMORIA RAPIDI
+
+
+            ----------------------
+            """.splitlines()
+
+
+            display("Today is " + now.strftime("%d/%m/%Y"))
+            display("Appuntamenti:")
+            for d in data:
+                display(d)
+
+
+
+            def directory(div):
+              divtarget = Element(div)
+              text = ""
+              for v in dir(divtarget):
+                text += v + v.__doc__
+              display(text, target=div)
+
+            def show(text, div):
+              divtarget = Element(div)
+              if divtarget.innerHtml == "":
+                divtarget.write("Il campo è vuoto")
+                divtarget.write(text)
+                # directory(div)
+              else:
+                divtarget.write("")
+
+              
+
+        </py-script>
+
+<!-- THEN COMES THE INDEX, IN THIS DIV, WITH LINKS TO INNER URLS -->
+<!-- DO NOT DELETE THIS DIV, IT'S USED BY THE JS CODE AT THE BOTTOM OF THE PAGE -->
+<h3>INDICE:</h3><div id='scribe'></div>
+
+<script type="text/javascript">
+
+  // ----------------------------------------------------------------------------------
+  //                               DOCUMENTATION
+  // ----------------------------------------------------------------------------------
+  /* ************* EXAMPLES OF THE WAY YOU PUT THE LINKS AND DATA IN let data = [...]
+  ESEMPIO                              SIGNIFICATO
+  ["titolo"],                          Solo un item = Titolo
+  ["p", "questo è un paragrafo"]       "p" = paragrafo, secondo item=contenuto del par.
+  ["testo", "link cui indirizza"]      in tutti gli altri casi, testo=quello che appare, 2° item=address
+     //IN CASO DI ERRORI: controlla che ci siano le VIRGOLE tra i dati
+
+  Button that shows some hidden text
+     ["pb-Click here",
+  "hello"]
+  -------------------------------------------------------------------------------------*/
+
+
+
+
+
+// ----------------------------------------------------------------------------
+// *********************** PUT YOUR DATA HERE AS YOU SEE IN THE
+// *********************** EXAMPLES ABOVE **********************************
+  
+  let data = [
+
+["Educazione civica"],
+["pb-Recupero ed.civ","La verifica del recupero delle carenze formative relativo all’Educazione civica è affidato, collegialmente, a tutti i docenti che hanno impartito l’insegnamento nella classe, secondo il progetto d’istituto (nota 699/2021)."],
+
+["Assenze"],
+["pb-699/2021","Per procedere alla valutazione finale dello studente, le istituzioni scolastiche possono stabilire, per casi eccezionali, motivate e straordinarie deroghe rispetto al requisito di frequenza di cui all’articolo 14, comma 7 del d.P.R. n. 122 del 2009, anche con riferimento alle specifiche situazioni dovute all’emergenza pandemica. "]
+
+
+
+// ----------------------- END OF DATA 'INPUT' ----------------------!!!!!
+
+] // ultima parentesi quadra chiusa
+
+// ********************** don't touch this code, please *******************
+// ********************** if you don't know what to do *******************
+// ********************** or everything will mess up *******************
+
+
+// ------------------- INDICE -------------------
+
+
+function changecolor(element){
+  element.style.color = "gold";
+  element.style.background = "red";
+}
+function gobacktocolor(element){
+  element.style.color = "red";
+  element.style.background = "gold";
+}
+data2 = [...data];
+data2.sort()
+for (let n in data2){
+  // VERIFICA SE E' UN TITOLO (SE HA UN SOLO DATO):
+  if (data2[n].length == 1){
+    scribe.innerHTML += "<li>[ <a href='#" + data2[n] + "'><b style='color:red;background-color:gold' onmouseover='changecolor(this)' onmouseout='gobacktocolor(this)'>" + data2[n] + "</b></a> ]  ";
+  }}
+
+
+
+
+// -------------------- DOPO INDICE --------------------
+// HERE THE BUTTONS WITH THE LINKS ARE SHOWN
+  divcount=0;
+for (let n in data){
+  
+  // TITOLO
+  if (data[n].length == 1){
+    // scribe.innerHTML += "<hr>"
+    scribe.innerHTML += "<br><center><h2 style='color:navy;background-color:gold'><a name='"+data[n]+"'>" + data[n] + "</a></h2></center>";}
+
+
+  // PARAGRAGO o link con immagini o senza
+  else{
+
+    // PARAGRAFO
+    if (data[n][0]== "p"){
+      scribe.innerHTML += "<p>" + data[n][1] + "</p>"}
+
+      // ============ CODE FOR THE BUTTON THAT WORKS WIT A PYTHON FUNCTION ==============  
+
+    else if (data[n][0].slice(0,2) == "pb"){ // IF THERE IS "pb" as the first item of the list "data[n][0]" inside the list of lists "data" ...
+      divcount += 1;
+      // in the scribe.div will be inserted a button that calls the python function show (with the py-onClick tag) to which it passes the data[n][1] with the text to show
+      // the id of the div that will be a name with 1,2,3... at the end to make it different from the previous buttons and the 3rd argument is the text that will
+      // appear on the button, taken from the data[n][0] after the "-". So, you have to write "pb-Click me" for example to make a button with "Click me" as the text
+      // example: ["pb-Click to read me","This is what you read when if you click the button"]
+      scribe.innerHTML += "<button id='my-button"+divcount+"' py-onClick=\"show('"+data[n][1]+"','helloDiv"+divcount+"')\">"+data[n][0].slice(3,data[n][0].length)+"</button><div id='helloDiv"+divcount+"'></div>"
+    }
+    // LILNK SENZA IMMAGINI
+    else if (data[n].length == 2) {
+      if (data[n][1] !=""){
+        scribe.innerHTML += 
+          "<a class='btn btn-warning' href='" + data[n][1] +
+          "' role='button'><b style='font-size:20'>" + data[n][0] + 
+          "</b></a> </p>";
+        }
+      else{
+        console.log("Sono passato di qui");
+        scribe.innerHTML += 
+          "<a class='btn btn-secondary' href='" + data[n][1] +
+          "' role='button'><b style='font-size:20'>" + data[n][0] + 
+          "</b></a> </p>";
+
+      }
+
+      }
+
+    // LINK CON IMMAGINI
+    else if (data[n].length==3){
+      scribe.innerHTML +=
+        "<a class='btn btn-warning' href='" + data[n][1] +
+        "' role='button'><b style='font-size:20'>" + data[n][0] + 
+        "</b> <img src='" + data[n][2]  + "' width=30></a> </p>";}
+    // bigger image if you want
+    else if (data[n].length==4){
+      scribe.innerHTML +=
+        "<a class='btn btn-warning' href='" + data[n][1] +
+        "' role='button'><b style='font-size:20'>" + data[n][0] + 
+        "</b> <img src='" + data[n][2]  + "' width="+data[n][3]+"></a></p>";}
+}} 
+
+// scribe.innerHTML += "<hr>" // Linea dopo gruppo di link
+
+</script>
+    </div>
+
+    <!-- copy until here to put this in script and styles in the blog -->
+      </div>
+
+<!-- EXAMPLES OF TYPE OF BUTTONS YOU CAN USE WITH BOOTSTRAP
+
+<button type="button" class="btn">Basic</button>
+<button type="button" class="btn btn-primary">Primary</button>
+<button type="button" class="btn btn-secondary">Secondary</button>
+<button type="button" class="btn btn-success">Success</button>
+<button type="button" class="btn btn-info">Info</button>
+<button type="button" class="btn btn-warning">Warning</button>
+<button type="button" class="btn btn-danger">Danger</button>
+<button type="button" class="btn btn-dark">Dark</button>
+<button type="button" class="btn btn-light">Light</button>
+<button type="button" class="btn btn-link">Link</button>
+
+  -->
